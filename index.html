@@ -33,22 +33,37 @@
     </style>
 
     <script>
+        // Yang akan tampil dibawah form input
         const todos = document.getElementById('todo')
 
+        // Fitur Todo:
+        // 1. menambahkan
+        // 2. coret kalau sudah selesai
+        // 3. menghapus
+
         function add (){
-        //1. ambil nilai dai textya
+        //1. ambil nilai dai textya dari user ini yang menjadi awal mula data masuk 
         let newText = document.getElementById('next_text')
-        console.log(newText.value)
 
         //2. tambahkan list baru ke dalam ul
-        let li = document.createElement('li')
-        let txt = document.createTextNode(newText.value)
+        let newTodo = `<li>
+            <span onclick="toggle(this)">${newText.value}</span>
+            <span style="color:red; cursor:pointer;" onclick="removeItem(this)"> [x] </span></li>`;
+            
 
-        li.appendChild(txt)
-        todos.appendChild(li)
+        todos.insertAdjacentHTML("afterbegin", newTodo)
+        
         //3. kosongkan Fieldnya
+        newText.value = ""
         
         }
 
+        function toggle(el) {
+            el.classList.toggle('done')
+        }
+
+        function removeItem(el){
+            el.parentElement.remove()
+        }
     </script>
 </body>
