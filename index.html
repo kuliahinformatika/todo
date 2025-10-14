@@ -33,8 +33,48 @@
     </style>
 
     <script>
-        // Yang akan tampil dibawah form input
-        const todos = document.getElementById('todo')
+        let todos = {}
+        const STORAGE_TODO = 'STORAGE_TODO'
+        // Yang akan tampil dibawah form input ul
+        const todoBox = document.getElementById('todo')
+
+        //======================================================
+        //=====  LOCAL STORAGE =================================
+        //======================================================
+
+
+
+        if (typeof(Storage) !== "undefined")
+            console.log("local storage available")
+        else
+            console.log("oops.you daata will gone after page reload")
+
+        function synclocalStorage(activity, item, status = false){
+            switch(activity){
+                case 'ADD':
+                    todos[item] = status
+                    break
+                case 'UPDATE':
+                    break
+                case 'DELETE':
+                    break
+                default:
+                    break
+            }
+
+            
+
+            localStorage.setItem(STORAGE_TODO, JSON.stringify(todos))
+            return
+        }
+
+
+
+         //======================================================
+        //=====  TODO FUNCTIONS ================================
+        //======================================================
+
+
 
         // Fitur Todo:
         // 1. menambahkan
@@ -51,7 +91,9 @@
             <span style="color:red; cursor:pointer;" onclick="removeItem(this)"> [x] </span></li>`;
             
 
-        todos.insertAdjacentHTML("afterbegin", newTodo)
+        todoBox.insertAdjacentHTML("afterbegin", newTodo)
+
+        synclocalStorage('ADD', newText.value)
         
         //3. kosongkan Fieldnya
         newText.value = ""
