@@ -43,38 +43,40 @@
         //======================================================
 
 
-
+        //check if localstorage API is available
         if (typeof(Storage) !== "undefined")
             console.log("local storage available")
         else
             console.log("oops.you daata will gone after page reload")
 
+        //read localStorage on first load = agar masih ada walaupun di refresh
+        if( todoFromLocal = localStorage.getItem(STORAGE_TODO)){
+            todos = JSON.parse(todoFromLocal)
+
+            for(let key in todos)
+                createList(key, todos[key])
+        }
+
         function synclocalStorage(activity, item, status = false){
             switch(activity){
                 case 'ADD':
+                case 'UPDATE':
                     todos[item] = status
                     break
-                case 'UPDATE':
-                    break
                 case 'DELETE':
+                    delete todos[item]
                     break
                 default:
                     break
             }
-
             
-
             localStorage.setItem(STORAGE_TODO, JSON.stringify(todos))
             return
         }
 
-
-
          //======================================================
         //=====  TODO FUNCTIONS ================================
         //======================================================
-
-
 
         // Fitur Todo:
         // 1. menambahkan
@@ -84,28 +86,32 @@
         function add (){
         //1. ambil nilai dai textya dari user ini yang menjadi awal mula data masuk 
         let newText = document.getElementById('next_text')
-
-        //2. tambahkan list baru ke dalam ul
-        let newTodo = `<li>
-            <span onclick="toggle(this)">${newText.value}</span>
-            <span style="color:red; cursor:pointer;" onclick="removeItem(this)"> [x] </span></li>`;
-            
-
-        todoBox.insertAdjacentHTML("afterbegin", newTodo)
-
+        createList(newText.value)
         synclocalStorage('ADD', newText.value)
-        
-        //3. kosongkan Fieldnya
         newText.value = ""
-        
+        }
+        //2. tambahkan list baru ke dalam ul
+        function createList(text, status = false){
+
+            let isDone = (status) ? 'done' : ""
+
+            let newTodo = `<li> 
+                            <span class='${isDone}' onclick='toggle(this)'>${text}</span>
+                            <span style=color:red; cursor:pointer; onclick=removeItem(this)>[x]</span>
+                            </li>`
+            
+            todoBox.insertAdjacentHTML("afterbegin", newTodo)
         }
 
+        //Toggle
         function toggle(el) {
-            el.classList.toggle('done')
+            let status = el.classList.toggle('done')
+            synclocalStorage('UPDATE', el.innerText, status)
         }
 
         function removeItem(el){
             el.parentElement.remove()
+            synclocalStorage('DELETE', el.previousElementSibling.innerText.trim())
         }
     </script>
 </body>
